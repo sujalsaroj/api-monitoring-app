@@ -13,6 +13,7 @@ import com.sujal.API_monitoring.dto.UpdateApiRequest;
 import com.sujal.API_monitoring.entity.MonitoredApi;
 import com.sujal.API_monitoring.entity.User;
 import com.sujal.API_monitoring.exception.ApiNotFoundException;
+import com.sujal.API_monitoring.exception.UserNotFoundException;
 import com.sujal.API_monitoring.repository.MonitorApiRepository;
 import com.sujal.API_monitoring.repository.UserRepository;
 
@@ -30,7 +31,7 @@ public class MonitoredApiService {
     }
 
     public ApiResponse createApi(CreateApiRequest request, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
         MonitoredApi api = new MonitoredApi();
         api.setName(request.getName());
         api.setUrl(request.getUrl());
@@ -59,7 +60,7 @@ public class MonitoredApiService {
 
      public MonitoredApi updateApi(Long id, UpdateApiRequest request) {
          MonitoredApi existingApi = monitorApiRepository.findById(id)
-                 .orElseThrow(() -> new RuntimeException("API not Found"));
+                 .orElseThrow(() -> new ApiNotFoundException("API not Found"));
 
          existingApi.setName(request.getName());
          existingApi.setCheckInterval(request.getCheckInterval());

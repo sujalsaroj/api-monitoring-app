@@ -35,12 +35,6 @@ public class UserController {
 
  @PostMapping
 public User createUser(@RequestBody User user) {
-
-    System.out.println("Name: " + user.getName());
-    System.out.println("Email: " + user.getEmail());
-    System.out.println("Password: " + user.getPassword());
-    System.out.println("Role: " + user.getRole());
-
     return userService.createUser(user);
 
     }
