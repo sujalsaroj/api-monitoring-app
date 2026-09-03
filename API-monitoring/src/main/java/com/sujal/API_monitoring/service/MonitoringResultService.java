@@ -25,12 +25,12 @@ public class MonitoringResultService {
         this.monitorResultRepository = monitorResultRepository;
     }
 
-    public Page<MonitoringResultResponse> getResultsByApiId(Long apiId,int page, int size) {
+    public Page<MonitoringResultResponse> getResultsByApiId(Long apiId,int page, int size,String email) {
 
-        if (!monitorApiRepository.existsById(apiId)) {
-            throw new ApiNotFoundException("Api Not Found with Id: " + apiId);
+    monitorApiRepository.findByIdAndUserEmail(apiId, email).orElseThrow(()->
+         new ApiNotFoundException("Api Not Found with Id: " + apiId));
 
-        }
+        
         Pageable pageable = PageRequest.of(page, size);
         Page<MonitoringResult> results = monitorResultRepository
                 .findByApiIdOrderByCreateAtDesc(apiId,pageable);
@@ -53,8 +53,8 @@ public class MonitoringResultService {
           return response;
       }
     
-      public ApiStatsResponse getApiStats(Long apiId) {
-          MonitoredApi api = monitorApiRepository.findById(apiId)
+      public ApiStatsResponse getApiStats(Long apiId,String email) {
+          MonitoredApi api = monitorApiRepository.findByIdAndUserEmail(apiId,email)
                   .orElseThrow(() -> new ApiNotFoundException("Api Not Found with Id: " + apiId));
 
           List<MonitoringResult> results = monitorResultRepository.findByApiIdOrderByCreateAtDesc(apiId);

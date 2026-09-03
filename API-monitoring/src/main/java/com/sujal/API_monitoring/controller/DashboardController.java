@@ -2,6 +2,7 @@ package com.sujal.API_monitoring.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +23,9 @@ public class DashboardController {
     }
 
     @GetMapping
-    public List<ApiDashboardResponse> getDashboard() {
+    public List<ApiDashboardResponse> getDashboard(Authentication authenticaton) {
+        String email = authenticaton.getName();
 
-        return dashboardService.getDashboard();
+        return dashboardService.getDashboard(email);
     }
 }

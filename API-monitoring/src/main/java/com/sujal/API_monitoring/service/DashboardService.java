@@ -24,7 +24,7 @@ public class DashboardService {
         this.monitorResultRepository = monitorResultRepository;
     }
 
-    public List<ApiDashboardResponse> getDashboard() {
+    public List<ApiDashboardResponse> getDashboard(String email) {
 
         List<MonitoredApi> apis =
                 monitorApiRepository.findAll();

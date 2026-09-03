@@ -30,8 +30,8 @@ public class MonitoredApiService {
         this.userRepository = userRepository;
     }
 
-    public ApiResponse createApi(CreateApiRequest request, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+    public ApiResponse createApi(CreateApiRequest request, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
         MonitoredApi api = new MonitoredApi();
         api.setName(request.getName());
         api.setUrl(request.getUrl());
@@ -46,20 +46,23 @@ public class MonitoredApiService {
         return convertToResponse(savedApi);
     }
 
-    public List<MonitoredApi> getAllApis() {
-        return monitorApiRepository.findAll();
+    public List<MonitoredApi> getAllApis(String email) {
+        return monitorApiRepository.findByUserEmail(email);
      }
 
-     public MonitoredApi getApiById(Long id) {
-         return monitorApiRepository.findById(id).orElseThrow(() -> new ApiNotFoundException("API not found with id: "+id));
+     public MonitoredApi getApiById(Long id,String email) {
+         return monitorApiRepository.findByIdAndUserEmail(id,email).orElseThrow(() -> new ApiNotFoundException("API not found with id: "+id));
      }
     
-     public void deleteById(Long id) {
-         monitorApiRepository.deleteById(id);
+
+     public void deleteById(Long id, String email) {
+         MonitoredApi api = monitorApiRepository.findByIdAndUserEmail(id, email)
+                 .orElseThrow(() -> new ApiNotFoundException("Api not found with id: " + id));
+         monitorApiRepository.delete(api);
      }
 
-     public MonitoredApi updateApi(Long id, UpdateApiRequest request) {
-         MonitoredApi existingApi = monitorApiRepository.findById(id)
+     public MonitoredApi updateApi(Long id, UpdateApiRequest request,String email) {
+         MonitoredApi existingApi = monitorApiRepository.findByIdAndUserEmail(id,email)
                  .orElseThrow(() -> new ApiNotFoundException("API not Found"));
 
          existingApi.setName(request.getName());

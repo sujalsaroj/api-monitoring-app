@@ -6,7 +6,7 @@
     import org.springframework.web.bind.annotation.PostMapping;
     import org.springframework.web.bind.annotation.PutMapping;
     import org.springframework.web.bind.annotation.RequestMapping;
-    import org.springframework.web.bind.annotation.RequestParam;
+
     import org.springframework.web.bind.annotation.RestController;
 
 import com.sujal.API_monitoring.dto.ApiResponse;
@@ -23,6 +23,10 @@ import java.util.*;
     
 import com.sujal.API_monitoring.monitoring.ApiHealthChecker;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+
     @RestController
     @RequestMapping("/api/apis")
     public class MonitorApiController {
@@ -37,33 +41,46 @@ import com.sujal.API_monitoring.monitoring.ApiHealthChecker;
         }
         
         @PostMapping
-        public ApiResponse creatApi( @Valid @RequestBody CreateApiRequest request,@RequestParam Long userId) {
-            return monitoredApiService.createApi(request,userId);
+        public ResponseEntity<ApiResponse> createApi( @Valid @RequestBody CreateApiRequest request,Authentication authenticaton
+            
+        ) {
+
+            String email = authenticaton.getName();
+            return ResponseEntity.status(HttpStatus.CREATED)
+            .body(monitoredApiService.createApi(request, email));
         }
 
         @GetMapping
-        public List<MonitoredApi> getAllApis() {
-            return monitoredApiService.getAllApis();
+        public List<MonitoredApi> getAllApis(Authentication authentication) {
+
+            String email = authentication.getName();
+            return monitoredApiService.getAllApis(email)    ;
         }
 
         @GetMapping("/{id}")
-        public MonitoredApi getApiById(@PathVariable Long id) {
-            return monitoredApiService.getApiById(id);
+        public MonitoredApi getApiById(@PathVariable Long id, Authentication authentication) {
+            String email = authentication.getName();
+            return monitoredApiService.getApiById(id,email);
         }
 
         @DeleteMapping("/{id}")
-        public void deleteApi(@PathVariable Long id) {
-            monitoredApiService.deleteById(id);
+        public void deleteApi(@PathVariable Long id, Authentication authentication) {
+            String email = authentication.getName();
+            monitoredApiService.deleteById(id,email);
         }
 
         @PutMapping("/{id}")
-        public MonitoredApi updateApi( @PathVariable Long id, @Valid @RequestBody UpdateApiRequest request) {
-            return monitoredApiService.updateApi(id, request);
+        public MonitoredApi updateApi(@PathVariable Long id, @Valid @RequestBody UpdateApiRequest request,
+                Authentication authentication) {
+            String email= authentication.getName();
+            return monitoredApiService.updateApi(id, request,email);
         }
         @PostMapping("/{id}/check")
-         public MonitoringResult checkApi(@PathVariable Long id) {
-
-            MonitoredApi api = monitoredApiService.getApiById(id);
+        public MonitoringResult checkApi(@PathVariable Long id
+            ,Authentication authentication
+         ) {
+          String email= authentication.getName();
+            MonitoredApi api = monitoredApiService.getApiById(id,email);
 
              return apiHealthChecker.checkApi(api);
          }
