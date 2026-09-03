@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.sujal.API_monitoring.service.JWTService;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +44,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
 
 
+        try{
+
         String email = jwtService.extractUsername(token);
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -60,6 +63,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             }
 
         }
+    } catch (JwtException e) {
+        
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("applicaton/json");
+        response.getWriter().write("{\"message\":\"Invalid or expired Token\"}");
+
+        return;
+
+    }
         filterChain.doFilter(request, response);
         
     }

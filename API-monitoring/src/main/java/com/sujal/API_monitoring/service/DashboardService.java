@@ -27,7 +27,7 @@ public class DashboardService {
     public List<ApiDashboardResponse> getDashboard(String email) {
 
         List<MonitoredApi> apis =
-                monitorApiRepository.findAll();
+                monitorApiRepository.findByUserEmail(email);
 
         return apis.stream()
                 .map(this::mapToDashboard)
