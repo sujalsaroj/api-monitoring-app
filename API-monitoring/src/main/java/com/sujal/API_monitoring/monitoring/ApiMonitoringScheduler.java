@@ -25,7 +25,7 @@ public class ApiMonitoringScheduler {
 
     }
     
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 600000)
     public void monitorApis() {
         List<MonitoredApi> apis = monitorApiRepository.findAll();
         for (MonitoredApi api : apis) {
