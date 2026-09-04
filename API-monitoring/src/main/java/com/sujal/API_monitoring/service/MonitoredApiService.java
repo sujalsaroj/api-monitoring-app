@@ -46,12 +46,15 @@ public class MonitoredApiService {
         return convertToResponse(savedApi);
     }
 
-    public List<MonitoredApi> getAllApis(String email) {
-        return monitorApiRepository.findByUserEmail(email);
+    public List<ApiResponse> getAllApis(String email) {
+        List<MonitoredApi> apis = monitorApiRepository.findByUserEmail(email);
+        return apis.stream().map(this::convertToResponse).toList();
      }
 
-     public MonitoredApi getApiById(Long id,String email) {
-         return monitorApiRepository.findByIdAndUserEmail(id,email).orElseThrow(() -> new ApiNotFoundException("API not found with id: "+id));
+     public ApiResponse getApiById(Long id,String email) {
+         MonitoredApi api = monitorApiRepository.findByIdAndUserEmail(id, email)
+                 .orElseThrow(() -> new ApiNotFoundException("API not found with id: " + id));
+         return convertToResponse(api);
      }
     
 
@@ -61,8 +64,8 @@ public class MonitoredApiService {
          monitorApiRepository.delete(api);
      }
 
-     public MonitoredApi updateApi(Long id, UpdateApiRequest request,String email) {
-         MonitoredApi existingApi = monitorApiRepository.findByIdAndUserEmail(id,email)
+     public ApiResponse updateApi(Long id, UpdateApiRequest request, String email) {
+         MonitoredApi existingApi = monitorApiRepository.findByIdAndUserEmail(id, email)
                  .orElseThrow(() -> new ApiNotFoundException("API not Found"));
 
          existingApi.setName(request.getName());
@@ -72,9 +75,22 @@ public class MonitoredApiService {
          existingApi.setTimeout(request.getTimeout());
          existingApi.setExpectedStatusCode(request.getExpectedStatusCode());
          existingApi.setUrl(request.getUrl());
-
-         return monitorApiRepository.save(existingApi);
+         MonitoredApi updateApi = monitorApiRepository.save(existingApi);
+         return convertToResponse(updateApi);
      }
+     
+    // GET ENTITY FOR INTERNAL BACKEND USE
+    // Example: ApiHealthChecker
+    public MonitoredApi getApiEntityById(
+            Long id,
+            String email) {
+
+        return monitorApiRepository
+                .findByIdAndUserEmail(id, email)
+                .orElseThrow(() ->
+                        new ApiNotFoundException(
+                                "API not found with id: " + id));
+    }
 
      private ApiResponse convertToResponse(MonitoredApi api) {
          ApiResponse response = new ApiResponse();

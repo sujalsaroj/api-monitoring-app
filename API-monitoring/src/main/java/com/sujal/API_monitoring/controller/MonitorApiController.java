@@ -88,7 +88,7 @@ import org.springframework.security.core.Authentication;
 
 
         @GetMapping
-public List<MonitoredApi> getAllApis(Authentication authentication) {
+public List<ApiResponse> getAllApis(Authentication authentication) {
 
     String email = authentication.getName();
     return monitoredApiService.getAllApis(email);
@@ -108,14 +108,15 @@ public List<MonitoredApi> getAllApis(Authentication authentication) {
 
 
         @GetMapping("/{id}")
-        public MonitoredApi getApiById(@PathVariable Long id, Authentication authentication) {
+        public ResponseEntity<ApiResponse> getApiById(@PathVariable Long id, Authentication authentication) {
             String email = authentication.getName();
-            return monitoredApiService.getApiById(id,email);
+            ApiResponse response = monitoredApiService.getApiById(id, email);
+            return ResponseEntity.ok(response);
         }
 @Operation(
     summary = "Delete monitored API",
     description = "Deletes an API belonging to the authenticated user"
-)
+)   
 @io.swagger.v3.oas.annotations.responses.ApiResponse(
     responseCode = "204",
     description = "API deleted successfully"
@@ -124,11 +125,17 @@ public List<MonitoredApi> getAllApis(Authentication authentication) {
     responseCode = "404",
     description = "API not found"
 )
-        @DeleteMapping("/{id}")
-        public void deleteApi(@PathVariable Long id, Authentication authentication) {
+          @DeleteMapping("/{id}")
+            public ResponseEntity<Void> deleteApi(
+                    @PathVariable Long id,
+                    Authentication authentication) {
+
             String email = authentication.getName();
-            monitoredApiService.deleteById(id, email);
-        }
+
+             monitoredApiService.deleteById(id, email);
+
+                return ResponseEntity.noContent().build();
+    }
 
         @Operation(
     summary = "Update monitored API",
@@ -148,10 +155,11 @@ public List<MonitoredApi> getAllApis(Authentication authentication) {
 )
 
         @PutMapping("/{id}")
-        public MonitoredApi updateApi(@PathVariable Long id, @Valid @RequestBody UpdateApiRequest request,
+        public ResponseEntity<ApiResponse> updateApi(@PathVariable Long id, @Valid @RequestBody UpdateApiRequest request,
                 Authentication authentication) {
             String email = authentication.getName();
-            return monitoredApiService.updateApi(id, request, email);
+            ApiResponse response = monitoredApiService.updateApi(id, request, email);
+            return ResponseEntity.ok(response);
         }
         @Operation(
     summary = "Check API health",
@@ -170,7 +178,7 @@ public List<MonitoredApi> getAllApis(Authentication authentication) {
             ,Authentication authentication
          ) {
           String email= authentication.getName();
-            MonitoredApi api = monitoredApiService.getApiById(id,email);
+            MonitoredApi api = monitoredApiService.getApiEntityById(id,email);
 
              return apiHealthChecker.checkApi(api);
          }

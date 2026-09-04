@@ -1,35 +1,40 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import { Navigate, useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 
-function Login() {
+function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post("/auth/login", {
+      const response = await api.post("/auth/register", {
+        name,
         email,
         password,
       });
       console.log(response.data);
-      localStorage.setItem("token", response.data.token);
-      alert("Login successfull");
-      navigate("/dashboard");
+      alert("Registration Successfully");
+      navigate("/login");
     } catch (error) {
       console.error(error);
-      alert("Invalid Email or Password");
+      alert("Registration failed");
     }
   };
-
   return (
     <>
       <div>
-        <h1>Login Page</h1>
-        <form onSubmit={handleLogin}>
+        <h1>Registration</h1>
+        <form onSubmit={handleRegister}>
+          <input
+            type="text"
+            placeholder="Enter your Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></input>
           <input
             type="email"
             placeholder="Enter Email"
@@ -42,14 +47,13 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           ></input>
-          <button type="submit">Login</button>
+          <button type="submit">Register</button>
           <p>
-            Don't have an account? <Link to="/register">Register</Link>
+            Already have an Account <Link to="/login">Login</Link>
           </p>
         </form>
       </div>
     </>
   );
 }
-
-export default Login;
+export default Register;

@@ -3,6 +3,7 @@ import heroImg from "./assets/hero.png";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
 import "./App.css";
+import AppRouter from "./routers/AppRouter";
 import Login from "./pages/Login";
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
 
   return (
     <>
-      <Login />
+      <AppRouter />
     </>
   );
 }

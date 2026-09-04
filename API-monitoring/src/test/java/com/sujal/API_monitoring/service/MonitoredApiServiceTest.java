@@ -25,6 +25,9 @@ import com.sujal.API_monitoring.exception.ApiNotFoundException;
 import com.sujal.API_monitoring.exception.UserNotFoundException;
 import com.sujal.API_monitoring.repository.MonitorApiRepository;
 import com.sujal.API_monitoring.repository.UserRepository;
+
+import io.swagger.v3.oas.models.responses.ApiResponses;
+
 import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,7 +56,7 @@ public class MonitoredApiServiceTest {
 
         //Act
 
-        MonitoredApi result = monitoredApiService.getApiById(apiId, email);
+        ApiResponse result = monitoredApiService.getApiById(apiId, email);
 
         //Assert
 
@@ -217,7 +220,7 @@ public class MonitoredApiServiceTest {
 
         when(monitorApiRepository.save(any(MonitoredApi.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        MonitoredApi result = monitoredApiService.updateApi(apiId, request, email);
+        ApiResponse result = monitoredApiService.updateApi(apiId, request, email);
 
         assertNotNull(result);
         assertEquals("Updated API", result.getName());
@@ -281,7 +284,7 @@ public class MonitoredApiServiceTest {
         List<MonitoredApi> apis = List.of(api1, api2);
         when(monitorApiRepository.findByUserEmail(email)).thenReturn(apis);
 
-        List<MonitoredApi> result = monitoredApiService.getAllApis(email);
+        List<ApiResponse> result = monitoredApiService.getAllApis(email);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -301,7 +304,7 @@ void shouldReturnEmptyListWhenUserHasNoApis() {
     ).thenReturn(List.of());
 
     // Act
-    List<MonitoredApi> result =
+    List<ApiResponse> result =
             monitoredApiService.getAllApis(email);
 
     // Assert
