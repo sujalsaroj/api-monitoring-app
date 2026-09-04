@@ -15,6 +15,7 @@ import com.sujal.API_monitoring.dto.UpdateApiRequest;
 import com.sujal.API_monitoring.entity.MonitoredApi;
 import com.sujal.API_monitoring.entity.MonitoringResult;
 import com.sujal.API_monitoring.service.MonitoredApiService;
+import com.sujal.API_monitoring.dto.MonitoringResultResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -174,12 +175,21 @@ public List<ApiResponse> getAllApis(Authentication authentication) {
     description = "API not found"
 )
         @PostMapping("/{id}/check")
-        public MonitoringResult checkApi(@PathVariable Long id
+        public MonitoringResultResponse checkApi(@PathVariable Long id
             ,Authentication authentication
          ) {
           String email= authentication.getName();
-            MonitoredApi api = monitoredApiService.getApiEntityById(id,email);
+          MonitoredApi api = monitoredApiService.getApiEntityById(id, email);
 
-             return apiHealthChecker.checkApi(api);
+          MonitoringResult result = apiHealthChecker.checkApi(api);
+          MonitoringResultResponse response = new MonitoringResultResponse();
+          response.setId(result.getId());
+        response.setStatus(result.getStatus());
+        response.setStatusCode(result.getStatusCode());
+        response.setResponseTime(result.getResponseTime());
+        response.setCreateAt(result.getCreateAt());
+        response.setErrorMessage(result.getErrorMessage());
+
+    return response;
          }
     }

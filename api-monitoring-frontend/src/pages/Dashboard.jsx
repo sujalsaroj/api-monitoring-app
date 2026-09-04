@@ -44,6 +44,23 @@ function Dashboard() {
     }
   };
 
+  const handleCheck = async (id) => {
+    try {
+      const response = await api.post(`/api/apis/${id}/check`);
+
+      console.log("CHECK RESULT:", response.data);
+
+      alert(
+        `Status: ${response.data.status}
+Status Code: ${response.data.statusCode}
+Response Time: ${response.data.responseTime} ms`,
+      );
+    } catch (error) {
+      console.error("Failed to check API:", error);
+      alert("Failed to check API");
+    }
+  };
+
   return (
     <>
       <div>
@@ -61,6 +78,10 @@ function Dashboard() {
               <button onClick={() => handleDelete(api.id)}>Delete</button>
               <button onClick={() => navigate(`/api/edit/${api.id}`)}>
                 Edit
+              </button>
+              <button onClick={() => handleCheck(api.id)}>Check Now</button>
+              <button onClick={() => navigate(`/apis/${api.id}/history`)}>
+                History
               </button>
             </div>
           ))

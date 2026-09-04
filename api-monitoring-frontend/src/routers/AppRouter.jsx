@@ -5,6 +5,7 @@ import Register from "../pages/Register";
 import ProtectedRouter from "../components/ProtectedRouter";
 import AddApi from "../pages/AddApi";
 import EditApi from "../pages/EditAPi";
+import ApiHistory from "../pages/ApiHistory";
 
 function AppRouter() {
   return (
@@ -32,6 +33,14 @@ function AppRouter() {
         element={
           <ProtectedRouter>
             <EditApi />
+          </ProtectedRouter>
+        }
+      ></Route>
+      <Route
+        path="/apis/:id/history"
+        element={
+          <ProtectedRouter>
+            <ApiHistory />
           </ProtectedRouter>
         }
       ></Route>
