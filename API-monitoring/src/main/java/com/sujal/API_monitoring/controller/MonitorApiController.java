@@ -16,6 +16,8 @@ import com.sujal.API_monitoring.entity.MonitoredApi;
 import com.sujal.API_monitoring.entity.MonitoringResult;
 import com.sujal.API_monitoring.service.MonitoredApiService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,16 +31,37 @@ import org.springframework.security.core.Authentication;
 
     @RestController
     @RequestMapping("/api/apis")
+    @Tag(
+    name = "Monitored APIs",
+    description = "APIs for creating, viewing, updating, deleting and checking monitored APIs"
+)
     public class MonitorApiController {
             
         private final MonitoredApiService monitoredApiService;
         private final ApiHealthChecker apiHealthChecker;
 
-        public MonitorApiController(MonitoredApiService monitoredApiService , ApiHealthChecker apiHealthChecker) {
+        public MonitorApiController(MonitoredApiService monitoredApiService, ApiHealthChecker apiHealthChecker) {
             this.monitoredApiService = monitoredApiService;
             this.apiHealthChecker = apiHealthChecker;
 
         }
+        
+        @Operation(
+    summary = "Create monitored API",
+    description = "Adds a new API to the authenticated user's monitoring list"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "201",
+    description = "API created successfully"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "400",
+    description = "Invalid request data"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "401",
+    description = "Unauthorized"
+)
         
         @PostMapping
         public ResponseEntity<ApiResponse> createApi( @Valid @RequestBody CreateApiRequest request,Authentication authenticaton
@@ -47,34 +70,101 @@ import org.springframework.security.core.Authentication;
 
             String email = authenticaton.getName();
             return ResponseEntity.status(HttpStatus.CREATED)
-            .body(monitoredApiService.createApi(request, email));
+                    .body(monitoredApiService.createApi(request, email));
         }
+        
+        @Operation(
+    summary = "Get all monitored APIs",
+    description = "Returns all APIs belonging to the authenticated user"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "200",
+    description = "APIs retrieved successfully"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "401",
+    description = "Unauthorized"
+)
+
 
         @GetMapping
-        public List<MonitoredApi> getAllApis(Authentication authentication) {
+public List<MonitoredApi> getAllApis(Authentication authentication) {
 
-            String email = authentication.getName();
-            return monitoredApiService.getAllApis(email)    ;
-        }
+    String email = authentication.getName();
+    return monitoredApiService.getAllApis(email);
+}
+        @Operation(
+    summary = "Get monitored API by ID",
+    description = "Returns a specific API belonging to the authenticated user"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "200",
+    description = "API found successfully"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "404",
+    description = "API not found"
+)
+
 
         @GetMapping("/{id}")
         public MonitoredApi getApiById(@PathVariable Long id, Authentication authentication) {
             String email = authentication.getName();
             return monitoredApiService.getApiById(id,email);
         }
-
+@Operation(
+    summary = "Delete monitored API",
+    description = "Deletes an API belonging to the authenticated user"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "204",
+    description = "API deleted successfully"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "404",
+    description = "API not found"
+)
         @DeleteMapping("/{id}")
         public void deleteApi(@PathVariable Long id, Authentication authentication) {
             String email = authentication.getName();
-            monitoredApiService.deleteById(id,email);
+            monitoredApiService.deleteById(id, email);
         }
+
+        @Operation(
+    summary = "Update monitored API",
+    description = "Updates an existing API belonging to the authenticated user"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "200",
+    description = "API updated successfully"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "400",
+    description = "Invalid request data"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "404",
+    description = "API not found"
+)
 
         @PutMapping("/{id}")
         public MonitoredApi updateApi(@PathVariable Long id, @Valid @RequestBody UpdateApiRequest request,
                 Authentication authentication) {
-            String email= authentication.getName();
-            return monitoredApiService.updateApi(id, request,email);
+            String email = authentication.getName();
+            return monitoredApiService.updateApi(id, request, email);
         }
+        @Operation(
+    summary = "Check API health",
+    description = "Immediately performs a health check on the selected API"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "200",
+    description = "Health check completed successfully"
+)
+@io.swagger.v3.oas.annotations.responses.ApiResponse(
+    responseCode = "404",
+    description = "API not found"
+)
         @PostMapping("/{id}/check")
         public MonitoringResult checkApi(@PathVariable Long id
             ,Authentication authentication
