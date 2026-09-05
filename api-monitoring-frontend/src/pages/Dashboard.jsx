@@ -83,6 +83,9 @@ Response Time: ${response.data.responseTime} ms`,
               <button onClick={() => navigate(`/apis/${api.id}/history`)}>
                 History
               </button>
+              <button onClick={() => navigate(`/apis/${api.id}/stats`)}>
+                Stats
+              </button>
             </div>
           ))
         )}
