@@ -467,3 +467,25 @@ Users can access only the monitored APIs associated with their own account.
 
 **Sujal Saroj**  
 Java & Spring Boot Developer
+
+## Screenshots
+
+### Dashboard
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+### Add API
+
+![Add API](docs/screenshots/AddPage.png)
+
+### Monitoring History
+
+![Monitoring History](docs/screenshots/monitoring_history.png)
+
+### API Statistics
+
+![API Statistics](docs/screenshots/stats.png)
+
+### Login Page
+
+![Login API](docs/screenshots/login.png)
