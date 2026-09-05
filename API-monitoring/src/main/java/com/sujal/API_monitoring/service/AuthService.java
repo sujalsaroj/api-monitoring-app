@@ -37,7 +37,7 @@ public class AuthService {
 
         User user = new User();
         user.setName(request.getName());
-        user.setEmail(request.getEmail());
+        user.setEmail(request.getEmail().trim().toLowerCase());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         user.setRole("USER");
@@ -46,9 +46,9 @@ public class AuthService {
     }
     
     public AuthResponse login(LoginRequest request) {
-
+        String email = request.getEmail().trim().toLowerCase();
         authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
         
         String token = jwtService.generateToken(request.getEmail());
 

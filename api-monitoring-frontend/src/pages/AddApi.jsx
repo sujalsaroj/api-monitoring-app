@@ -26,11 +26,10 @@ function AddApi() {
         timeout,
         active,
       });
-      console.log(response.data);
+
       toast.success("API added Successfully");
       navigate("/dashboard");
     } catch (error) {
-      console.error("Failed to add API: " + error);
       toast.error("Failed to Add");
     }
   };

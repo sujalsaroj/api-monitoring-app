@@ -16,12 +16,11 @@ function Login() {
         email,
         password,
       });
-      console.log(response.data);
+
       localStorage.setItem("token", response.data.token);
       toast.success("Login successfull");
       navigate("/dashboard");
     } catch (error) {
-      console.error(error);
       toast.error("Invalid Email or Password");
     }
   };
