@@ -6,6 +6,7 @@ import ProtectedRouter from "../components/ProtectedRouter";
 import AddApi from "../pages/AddApi";
 import EditApi from "../pages/EditAPi";
 import ApiHistory from "../pages/ApiHistory";
+import MainLayout from "../layouts/MainLayout";
 import ApiStats from "../pages/ApiStats";
 
 function AppRouter() {
@@ -14,45 +15,22 @@ function AppRouter() {
       <Route path="/login" element={<Login />}></Route>
       <Route path="/register" element={<Register />}></Route>
       <Route
-        path="/dashboard"
         element={
           <ProtectedRouter>
-            <Dashboard />
+            <MainLayout />
           </ProtectedRouter>
         }
-      ></Route>
-      <Route
-        path="/addApi"
-        element={
-          <ProtectedRouter>
-            <AddApi />
-          </ProtectedRouter>
-        }
-      ></Route>
-      <Route
-        path="/api/edit/:id"
-        element={
-          <ProtectedRouter>
-            <EditApi />
-          </ProtectedRouter>
-        }
-      ></Route>
-      <Route
-        path="/apis/:id/history"
-        element={
-          <ProtectedRouter>
-            <ApiHistory />
-          </ProtectedRouter>
-        }
-      ></Route>
-      <Route
-        path="/apis/:id/stats"
-        element={
-          <ProtectedRouter>
-            <ApiStats />
-          </ProtectedRouter>
-        }
-      ></Route>
+      >
+        <Route path="/dashboard" element={<Dashboard />} />
+
+        <Route path="/apis/add" element={<AddApi />} />
+
+        <Route path="/apis/edit/:id" element={<EditApi />} />
+
+        <Route path="/apis/:id/history" element={<ApiHistory />} />
+
+        <Route path="/apis/:id/stats" element={<ApiStats />} />
+      </Route>
     </Routes>
   );
 }

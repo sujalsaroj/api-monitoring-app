@@ -5,6 +5,7 @@ import viteLogo from "./assets/vite.svg";
 import "./App.css";
 import AppRouter from "./routers/AppRouter";
 import Login from "./pages/Login";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -12,6 +13,16 @@ function App() {
   return (
     <>
       <AppRouter />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: "#363636",
+            color: "#fff",
+            duration: 3000,
+          },
+        }}
+      />
     </>
   );
 }
